@@ -67,7 +67,6 @@ smart-bookmark-app/
 └── types/index.ts                  # Bookmark type
 
 ```
-
 ---
 
 ## Database Schema
@@ -102,7 +101,7 @@ create policy "Users can delete own bookmarks"
 ### 1. Clone the repo
 
 ```bash
-git clone https://github.com/your-username/smart-bookmark-app.git
+git clone https://github.com/Jagruti-hota123/smart-bookmark-app.git
 cd smart-bookmark-app
 ```
 
