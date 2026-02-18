@@ -30,7 +30,6 @@ export default async function BookmarksPage() {
     <div className="min-h-screen bg-background">
       <header className="border-b border-border sticky top-0 bg-background/80 backdrop-blur-sm z-10">
         <div className="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between">
-          {/* Logo + Live badge */}
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
               <Bookmark className="w-4 h-4 text-primary-foreground" />
@@ -39,10 +38,7 @@ export default async function BookmarksPage() {
               <span className="font-semibold text-foreground tracking-tight block">
                 SmartMark
               </span>
-              <div className="flex items-center gap-1 text-[10px] text-muted-foreground uppercase tracking-widest">
-                <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-                Syncing Live
-              </div>
+              
             </div>
           </div>
 

@@ -23,7 +23,6 @@ export default function GoogleSignInButton() {
         "text-sm font-medium text-foreground transition-colors"
       )}
     >
-      {/* Google G icon */}
       <svg className="w-4 h-4" viewBox="0 0 24 24">
         <path
           fill="#4285F4"

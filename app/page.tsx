@@ -20,9 +20,9 @@ export default async function Home() {
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
               <Bookmark className="w-4 h-4 text-primary-foreground" />
-      
+
             </div>
-            
+
             <span className="font-semibold text-foreground tracking-tight">SmartMark</span>
           </div>
           <div className="flex items-center gap-1">
@@ -82,35 +82,25 @@ export default async function Home() {
 
               <GoogleSignInButton />
 
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-border" />
-                </div>
-                <div className="relative flex justify-center">
-                  <span className="bg-card px-3 text-xs text-muted-foreground tracking-widest uppercase">
-                    Coming Soon
-                  </span>
-                </div>
+              {/* Feature hints */}
+              <div className="grid grid-cols-2 gap-3 pt-1">
+                {[
+                  { icon: "⚡", label: "Instant sync" },
+                  { icon: "🔒", label: "Private by default" },
+                  { icon: "🌐", label: "Any device" },
+                  { icon: "🗂️", label: "Auto-organized" },
+                ].map(({ icon, label }) => (
+                  <div
+                    key={label}
+                    className="flex items-center gap-2 px-3 py-2 rounded-lg bg-muted text-xs text-muted-foreground"
+                  >
+                    <span>{icon}</span>
+                    <span>{label}</span>
+                  </div>
+                ))}
               </div>
-
-              <button
-                disabled
-                className={cn(
-                  "w-full flex items-center gap-3 px-4 py-3 rounded-lg border border-border",
-                  "text-sm text-muted-foreground opacity-50 cursor-not-allowed"
-                )}
-              >
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <rect width="20" height="16" x="2" y="4" rx="2" />
-                  <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-                </svg>
-                Sign in with Email
-              </button>
-
-              <p className="text-xs text-center text-muted-foreground">
-                By clicking continue, you agree to our Terms of Service and Privacy Policy.
-              </p>
             </div>
+
 
             <div className="mt-4 flex justify-center">
               <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-muted text-xs text-muted-foreground">
@@ -177,18 +167,11 @@ export default async function Home() {
             </div>
           </div>
           <div className="flex gap-6 text-sm text-muted-foreground">
-            {["About", "Privacy", "Terms", "Support", "GitHub"].map((link) => (
-              <span key={link} className="hover:text-foreground cursor-pointer transition-colors">
-                {link}
-              </span>
-            ))}
+            © 2026 SmartMark. All rights reserved. Built for organized minds. By Jagruti Hota❤️
+
           </div>
         </div>
-        <div className="border-t border-border">
-          <p className="text-center text-xs text-muted-foreground py-4">
-            © 2026 SmartMark. All rights reserved. Built for organized minds. By Jagruti Hota❤️
-          </p>
-        </div>
+
       </footer>
     </div>
   );

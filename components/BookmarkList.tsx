@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import type { Bookmark } from "@/types";
 import AddBookmark from "./AddBookmark";
 
-const FILTERS = ["All", "Recently Added", "Work", "Reference"];
+const FILTERS = ["All", "General", "Recently Added", "Work", "Reference"];
 
 const TINTS = [
   "bg-blue-100 dark:bg-blue-950",
@@ -61,6 +61,23 @@ export default function BookmarkList({ initialBookmarks, userId }: BookmarkListP
   const [deleting, setDeleting] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [activeFilter, setActiveFilter] = useState("All");
+
+  const handleQuickAdd = async () => {
+    const url = prompt("Paste URL");
+    if (!url) return;
+
+    const title = prompt("Title") || url;
+
+    const res = await fetch("/api/bookmarks", {
+      method: "POST",
+      body: JSON.stringify({ url, title }),
+    });
+
+    const data = await res.json();
+    handleAdd(data);
+  };
+
+
 
   // Realtime subscription
   useEffect(() => {
@@ -118,6 +135,7 @@ export default function BookmarkList({ initialBookmarks, userId }: BookmarkListP
       const hrs = (Date.now() - new Date(b.created_at).getTime()) / 3600000;
       return matchesSearch && hrs < 24;
     }
+    if(activeFilter === "General") return matchesSearch && b.category ==="general"; 
     if (activeFilter === "Work") return matchesSearch && b.category === "work";
     if (activeFilter === "Reference") return matchesSearch && b.category === "reference";
     return matchesSearch;
@@ -215,7 +233,9 @@ export default function BookmarkList({ initialBookmarks, userId }: BookmarkListP
             />
           ))}
           {/* Quick Bookmark CTA */}
-          <div className="rounded-xl border border-dashed border-border flex flex-col items-center justify-center gap-2 py-10 text-muted-foreground hover:bg-accent/50 transition-colors cursor-pointer min-h-[160px]">
+          <div onClick={handleQuickAdd}
+            className="rounded-xl border border-dashed border-border flex flex-col items-center justify-center gap-2 py-10 text-muted-foreground hover:bg-accent/50 transition-colors cursor-pointer min-h-[160px]"
+          >
             <div className="w-9 h-9 rounded-full border-2 border-dashed border-muted-foreground/40 flex items-center justify-center">
               <span className="text-xl leading-none mb-0.5">+</span>
             </div>
@@ -226,17 +246,12 @@ export default function BookmarkList({ initialBookmarks, userId }: BookmarkListP
 
       {/* Footer */}
       <div className="border-t border-border mt-16 pt-10 pb-10 flex flex-col items-center gap-1">
-        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-          <Shield className="w-3.5 h-3.5" />
-          End-to-end encrypted storage
-        </div>
         <p className="text-xs text-muted-foreground">© 2026 SmartMark. All rights reserved. Created By Jagruti❤️</p>
       </div>
     </div>
   );
 }
 
-// Bookmark Card
 function BookmarkCard({ bookmark, onDelete, deleting }: {
   bookmark: Bookmark;
   onDelete: (id: string) => void;
@@ -249,56 +264,56 @@ function BookmarkCard({ bookmark, onDelete, deleting }: {
 
   return (
     <div>
-    <div className={cn(
-      "group rounded-xl border border-border bg-card p-5 flex flex-col gap-4",
-      "hover:shadow-md transition-all duration-200",
-      deleting && "opacity-50 pointer-events-none"
-    )}>
-      <div className="flex items-start justify-between">
-        <div className={cn(
-          "w-10 h-10 rounded-lg flex items-center justify-center overflow-hidden shrink-0",
-          tint
-        )}>
-          {faviconUrl && !faviconError ? (
-            <img
-              src={faviconUrl}
-              alt=""
-              className="w-6 h-6 object-contain"
-              onError={() => setFaviconError(true)}
-            />
-          ) : (
-            <Globe className="w-5 h-5 text-muted-foreground" />
-          )}
+      <div className={cn(
+        "group rounded-xl border border-border bg-card p-5 flex flex-col gap-4",
+        "hover:shadow-md transition-all duration-200",
+        deleting && "opacity-50 pointer-events-none"
+      )}>
+        <div className="flex items-start justify-between">
+          <div className={cn(
+            "w-10 h-10 rounded-lg flex items-center justify-center overflow-hidden shrink-0",
+            tint
+          )}>
+            {faviconUrl && !faviconError ? (
+              <img
+                src={faviconUrl}
+                alt=""
+                className="w-6 h-6 object-contain"
+                onError={() => setFaviconError(true)}
+              />
+            ) : (
+              <Globe className="w-5 h-5 text-muted-foreground" />
+            )}
+          </div>
+          <button
+            onClick={() => onDelete(bookmark.id)}
+            className="p-1.5 rounded-lg text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity hover:bg-destructive/10 hover:text-destructive"
+            aria-label="Delete"
+          >
+            <Trash2 className="w-4 h-4" />
+          </button>
         </div>
-        <button
-          onClick={() => onDelete(bookmark.id)}
-          className="p-1.5 rounded-lg text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity hover:bg-destructive/10 hover:text-destructive"
-          aria-label="Delete"
-        >
-          <Trash2 className="w-4 h-4" />
-        </button>
-      </div>
 
-      <div className="flex-1">
-        <a
-          href={bookmark.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="font-semibold text-foreground text-sm leading-snug hover:text-primary transition-colors line-clamp-2 flex items-start gap-1 group/link"
-        >
-          {bookmark.title}
-          <ExternalLink className="w-3 h-3 mt-0.5 shrink-0 opacity-0 group-hover/link:opacity-100 transition-opacity" />
-        </a>
-        <p className="text-xs text-muted-foreground mt-1 truncate">{domain}</p>
-      </div>
+        <div className="flex-1">
+          <a
+            href={bookmark.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-semibold text-foreground text-sm leading-snug hover:text-primary transition-colors line-clamp-2 flex items-start gap-1 group/link"
+          >
+            {bookmark.title}
+            <ExternalLink className="w-3 h-3 mt-0.5 shrink-0 opacity-0 group-hover/link:opacity-100 transition-opacity" />
+          </a>
+          <p className="text-xs text-muted-foreground mt-1 truncate">{domain}</p>
+        </div>
 
-      <div className="flex items-center justify-between text-xs text-muted-foreground">
-        <span className="px-2 py-0.5 rounded-full bg-accent uppercase tracking-wide text-[10px] font-medium">
-          {bookmark.category || "general"}
-        </span>
-        <span>{timeAgo(bookmark.created_at)}</span>
+        <div className="flex items-center justify-between text-xs text-muted-foreground">
+          <span className="px-2 py-0.5 rounded-full bg-accent uppercase tracking-wide text-[10px] font-medium">
+            {bookmark.category || "general"}
+          </span>
+          <span>{timeAgo(bookmark.created_at)}</span>
+        </div>
       </div>
     </div>
-    </div>
-   );
+  );
 }

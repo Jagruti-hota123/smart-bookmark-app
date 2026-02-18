@@ -40,34 +40,33 @@ A minimalist bookmark manager built with Next.js, Supabase, and Tailwind CSS. Sa
 
 ## Project Structure
 
-```
+    smart-bookmark-app/
+    ├── app/
+    │   ├── api/bookmarks/route.ts     # REST API — GET, POST, DELETE
+    │   ├── auth/callback/route.ts     # OAuth callback handler
+    │   ├── bookmarks/page.tsx         # Protected dashboard (SSR)
+    │   ├── globals.css                # shadcn CSS variables
+    │   ├── layout.tsx                 # Root layout with ThemeProvider
+    │   └── page.tsx                   # Landing / login page
+    ├── components/
+    │   ├── AddBookmark.tsx            # Add bookmark form
+    │   ├── BookmarkList.tsx           # Realtime bookmark list + cards
+    │   ├── GoogleSignInButton.tsx     # OAuth trigger button
+    │   ├── SignOutButton.tsx          # Sign out
+    │   ├── ThemeToggle.tsx            # Dark/light toggle
+    │   └── ui/                        # shadcn components
+    ├── lib/
+    │   ├── supabase/
+    │   │   ├── client.ts              # Browser Supabase client
+    │   │   ├── server.ts              # Server Supabase client
+    │   │   └── middleware.ts          # Session refresh + route guard
+    │   └── utils.ts                   # cn() utility
+    ├── proxy.ts                       # Protects /bookmarks route
+    └── types/index.ts                 # Bookmark type
 
-smart-bookmark-app/
-├── app/
-│   ├── api/bookmarks/route.ts     # REST API — GET, POST, DELETE
-│   ├── auth/callback/route.ts     # OAuth callback handler
-│   ├── bookmarks/page.tsx         # Protected dashboard (SSR)
-│   ├── globals.css                # shadcn CSS variables
-│   ├── layout.tsx                 # Root layout with ThemeProvider
-│   └── page.tsx                   # Landing / login page
-├── components/
-│   ├── AddBookmark.tsx            # Add bookmark form
-│   ├── BookmarkList.tsx           # Realtime bookmark list + cards
-│   ├── GoogleSignInButton.tsx     # OAuth trigger button
-│   ├── SignOutButton.tsx          # Sign out
-│   ├── ThemeToggle.tsx            # Dark/light toggle
-│   └── ui/                        # shadcn components
-├── lib/
-│   ├── supabase/
-│   │   ├── client.ts              # Browser Supabase client
-│   │   ├── server.ts              # Server Supabase client
-│   │   └── middleware.ts          # Session refresh + route guard
-│   └── utils.ts                   # cn() utility
-├── middleware.ts                   # Protects /bookmarks route
-└── types/index.ts                  # Bookmark type
-
-```
 ---
+
+## Database Schema
 
 ## Database Schema
 
