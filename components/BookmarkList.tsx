@@ -62,20 +62,26 @@ export default function BookmarkList({ initialBookmarks, userId }: BookmarkListP
   const [search, setSearch] = useState("");
   const [activeFilter, setActiveFilter] = useState("All");
 
-  const handleQuickAdd = async () => {
-    const url = prompt("Paste URL");
-    if (!url) return;
+const handleQuickAdd = async () => {
+  const url = prompt("Paste URL");
+  if (!url) return;
 
-    const title = prompt("Title") || url;
+  const title = prompt("Title") || url;
 
-    const res = await fetch("/api/bookmarks", {
-      method: "POST",
-      body: JSON.stringify({ url, title }),
-    });
+  const res = await fetch("/api/bookmarks", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      url,
+      title,
+      category: "general", // ⭐ important
+    }),
+  });
 
-    const data = await res.json();
-    handleAdd(data);
-  };
+  const data = await res.json();
+  handleAdd(data.bookmark);
+};
+
 
 
 
