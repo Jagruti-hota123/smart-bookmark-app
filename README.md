@@ -6,6 +6,12 @@ A minimalist bookmark manager built with Next.js, Supabase, and Tailwind CSS. Sa
 
 ---
 
+## Architecture
+
+![SmartMark Flow Diagram](./docs/flowchart.png)
+
+```
+
 ## Features
 
 - **Google OAuth** — Sign in with Google, no email/password required
@@ -35,6 +41,7 @@ A minimalist bookmark manager built with Next.js, Supabase, and Tailwind CSS. Sa
 ## Project Structure
 
 ```
+
 smart-bookmark-app/
 ├── app/
 │   ├── api/bookmarks/route.ts     # REST API — GET, POST, DELETE
@@ -58,6 +65,7 @@ smart-bookmark-app/
 │   └── utils.ts                   # cn() utility
 ├── middleware.ts                   # Protects /bookmarks route
 └── types/index.ts                  # Bookmark type
+
 ```
 
 ---
