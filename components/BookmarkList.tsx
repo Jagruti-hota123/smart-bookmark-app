@@ -61,26 +61,32 @@ export default function BookmarkList({ initialBookmarks, userId }: BookmarkListP
   const [deleting, setDeleting] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [activeFilter, setActiveFilter] = useState("All");
+  const [quickAdd, setQuickAdd] = useState(false);
+  const [quickUrl, setQuickUrl] = useState("");
+  const [quickTitle, setQuickTitle] = useState("");
+  const [quickLoading, setQuickLoading] = useState(false);
 
-const handleQuickAdd = async () => {
-  const url = prompt("Paste URL");
-  if (!url) return;
-
-  const title = prompt("Title") || url;
-
-  const res = await fetch("/api/bookmarks", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      url,
-      title,
-      category: "general", // ⭐ important
-    }),
-  });
-
-  const data = await res.json();
-  handleAdd(data.bookmark);
-};
+  const handleQuickAdd = async () => {
+    if (!quickUrl.trim()) return;
+    setQuickLoading(true);
+    try {
+      const res = await fetch("/api/bookmarks", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: quickUrl.trim(), title: quickTitle.trim(), category: "general" }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      handleAdd(data.bookmark);
+      setQuickUrl("");
+      setQuickTitle("");
+      setQuickAdd(false);
+    } catch {
+      toast.error("Failed to save bookmark");
+    } finally {
+      setQuickLoading(false);
+    }
+  };
 
 
 
@@ -141,7 +147,7 @@ const handleQuickAdd = async () => {
       const hrs = (Date.now() - new Date(b.created_at).getTime()) / 3600000;
       return matchesSearch && hrs < 24;
     }
-    if(activeFilter === "General") return matchesSearch && b.category ==="general"; 
+    if (activeFilter === "General") return matchesSearch && b.category === "general";
     if (activeFilter === "Work") return matchesSearch && b.category === "work";
     if (activeFilter === "Reference") return matchesSearch && b.category === "reference";
     return matchesSearch;
@@ -239,14 +245,52 @@ const handleQuickAdd = async () => {
             />
           ))}
           {/* Quick Bookmark CTA */}
-          <div onClick={handleQuickAdd}
-            className="rounded-xl border border-dashed border-border flex flex-col items-center justify-center gap-2 py-10 text-muted-foreground hover:bg-accent/50 transition-colors cursor-pointer min-h-[160px]"
-          >
-            <div className="w-9 h-9 rounded-full border-2 border-dashed border-muted-foreground/40 flex items-center justify-center">
-              <span className="text-xl leading-none mb-0.5">+</span>
+          {/* Quick Bookmark CTA */}
+          {quickAdd ? (
+            <div className="rounded-xl border border-border bg-card p-5 flex flex-col gap-3 min-h-[160px]">
+              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Quick Add</p>
+              <input
+                type="url"
+                value={quickUrl}
+                onChange={(e) => setQuickUrl(e.target.value)}
+                placeholder="https://..."
+                autoFocus
+                className="w-full px-3 py-2 rounded-lg border border-input bg-background text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+              />
+              <input
+                type="text"
+                value={quickTitle}
+                onChange={(e) => setQuickTitle(e.target.value)}
+                placeholder="Title (optional)"
+                className="w-full px-3 py-2 rounded-lg border border-input bg-background text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+              />
+              <div className="flex gap-2">
+                <button
+                  onClick={handleQuickAdd}
+                  disabled={quickLoading || !quickUrl.trim()}
+                  className="flex-1 py-1.5 rounded-lg bg-primary text-primary-foreground text-xs font-medium hover:opacity-90 disabled:opacity-50 transition-opacity"
+                >
+                  {quickLoading ? "Saving…" : "Save"}
+                </button>
+                <button
+                  onClick={() => { setQuickAdd(false); setQuickUrl(""); setQuickTitle(""); }}
+                  className="px-3 py-1.5 rounded-lg bg-muted text-muted-foreground text-xs hover:text-foreground transition-colors"
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
-            <span className="text-sm">Quick Bookmark</span>
-          </div>
+          ) : (
+            <div
+              onClick={() => setQuickAdd(true)}
+              className="rounded-xl border border-dashed border-border flex flex-col items-center justify-center gap-2 py-10 text-muted-foreground hover:bg-accent/50 transition-colors cursor-pointer min-h-[160px]"
+            >
+              <div className="w-9 h-9 rounded-full border-2 border-dashed border-muted-foreground/40 flex items-center justify-center">
+                <span className="text-xl leading-none mb-0.5">+</span>
+              </div>
+              <span className="text-sm">Quick Bookmark</span>
+            </div>
+          )}
         </div>
       )}
 
